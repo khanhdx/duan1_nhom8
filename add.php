@@ -9,7 +9,7 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="dashboard_header_title">
-                                    <h3></h3>
+                                    <h3> Thêm Mới Khách Hàng</h3>
                                 </div>
                             </div>
                         </div>
@@ -22,50 +22,58 @@
 
                                 <div class="modal-content cs_modal">
                                     <div class="modal-header justify-content-center theme_bg_1">
-                                        <h5 class="modal-title text_white">Add Shirt</h5>
+                                        <h5 class="modal-title text_white">Khách Hàng</h5>
                                     </div>
                                     <div class="modal-body">
-                                        <form action="index.php?act=addsp" method="POST" enctype="multipart/form-data">
-                                            <div class="mb_10">
-                                               
-                                            Group product:  
-                                                <select name="id_groupproduct" id="">
-
-                                                    <?php foreach ($listgroupproduct as $groupproduct) {
-                                                        extract($groupproduct);
-                                                        echo '<option value="' . $id . '">' . $name . '</option>';
-                                                    }
-
-                                                    ?>
-                                                </select>
-                                            </div>
-
+                                        <form action="index.php?act=addtk" method="post">
                                             <div class="mb_10">
                                                 <label for="">
                                                     <div class="main-title">
-                                                        <h5 class="mb-0">Tên áo:</h5>
+                                                        <h5 class="mb-0">Tên Khách Hàng</h5>
                                                     </div>
                                                 </label>
-                                                <input type="text" class="form-control" name="name">
+                                                <input type="text" class="form-control" name="name" placeholder="Nhập Tên">
                                             </div>
                                             <div class="mb_10">
                                                 <label for="">
                                                     <div class="main-title">
-                                                        <h5 class="mb-0">Image:</h5>
+                                                        <h5 class="mb-0">Email</h5>
                                                     </div>
                                                 </label>
-                                                <input type="file" class="form-control" name="hinh">
+                                                <input type="text" class="form-control" name="email" placeholder="Nhập Email ">
                                             </div>
                                             <div class="mb_10">
                                                 <label for="">
                                                     <div class="main-title">
-                                                        <h5 class="mb-0">Giá:</h5>
+                                                        <h5 class="mb-0">Số Điện Thoại</h5>
                                                     </div>
                                                 </label>
-                                                <input type="text" class="form-control" name="price">
+                                                <input type="text" class="form-control" name="phone" placeholder="Nhập Số Điện Thoại">
                                             </div>
-                                         
-
+                                            <div class="mb_10">
+                                                <label for="">
+                                                    <div class="main-title">
+                                                        <h5 class="mb-0">Địa Chỉ</h5>
+                                                    </div>
+                                                </label>
+                                                <input type="text" class="form-control" name="address" placeholder="Nhập Địa Chỉ ">
+                                            </div>
+                                            <div class="mb_10">
+                                                <label for="">
+                                                    <div class="main-title">
+                                                        <h5 class="mb-0">Mật Khẩu</h5>
+                                                    </div>
+                                                </label>
+                                                <input type="text" class="form-control" name="password" placeholder="Nhập Mật Khẩu ">
+                                            </div>
+                                            <div class="mb_10">
+                                                <label for="">
+                                                    <div class="main-title">
+                                                        <h5 class="mb-0">Giới tính</h5>
+                                                    </div>
+                                                </label>
+                                                <input type="text" class="form-control" name="gender" placeholder="Giới tính">
+                                            </div>
                                             <div class>
                                                 <div class="add_button">
                                                     <input type="submit" name="themmoi" class="btn_1" value="Thêm Mới">
