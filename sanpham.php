@@ -1,76 +1,123 @@
 <?php
-function  insert_sanpham($name, $hinh, $price, $id_groupproduct)
+function loadall_sp()
 {
-    $sql = "INSERT INTO products(name,img,price,id_groupproduct) VALUES('$name','$hinh','$price','$id_groupproduct')";
-    pdo_execute($sql);
+    $sql = "SELECT * FROM `sanpham` WHERE trangthai = 0 ORDER BY id desc limit 0,9";
+    $kq = getdb($sql);
+    return $kq;
+}
+function load_sp_top10()
+{
+    $sql = "SELECT * FROM `sanpham` WHERE trangthai = 0 ORDER BY luotxem desc limit 0, 10";
+    $top10 = getdb($sql);
+    return $top10;
 }
 
-function delete_sanpham($id)
+function chitietsp($idsp)
 {
-    $sql = "DELETE FROM products WHERE id=" . $id;
-    pdo_execute($sql);
+    $sql = "SELECT * FROM `sanpham` WHERE id = $idsp";
+    $spchitiet = getdb($sql);
+    return $spchitiet;
 }
-
-
-function loadall_sanpham_home()
-{
-    $sql = "SELECT * FROM products WHERE 1 ORDER BY id DESC LIMIT 0,9";
-    $listsanpham = pdo_query($sql);
-    return $listsanpham;
-}
-// function loadall_sanpham_top10()
+// function buy_sp($idsp)
 // {
-//     $sql = "SELECT * FROM sanpham WHERE 1 ORDER BY luotxem DESC LIMIT 0,10";
-//     $listsanpham = pdo_query($sql);
-//     return $listsanpham;
+//     $sql = "SELECT * FROM `giohang` WHERE id = $idsp";
+//     $spchitiet = getdb($sql);
+//     return $spchitiet;
 // }
-
-function loadall_sanpham($keyw = "", $id_groupproduct)
+function loadsp_cungloai($id, $iddm)
 {
-    $sql = "SELECT * FROM products WHERE 1";
-    if ($keyw != "") {
-        $sql .= " and name like '%" . $keyw . "%'";
+    $sql = "SELECT * FROM `sanpham` WHERE iddm = $iddm and id <> $id";
+    $sp_cungloai = getdb($sql);
+    return $sp_cungloai;
+}
+function loadall_dssp($key = '', $iddm = 0)
+{
+    $sql = "SELECT sanpham.id,sanpham.img,sanpham.name,sanpham.price,danhmuc.dm_name FROM `sanpham` JOIN `danhmuc` ON sanpham.iddm = danhmuc.id WHERE sanpham.trangthai = 0 ";
+    if ($key != '' && $iddm > 0) {
+        $sql .= " AND sanpham.name LIKE '%$key%' AND danhmuc.id =$iddm";
     }
-    if ($id_groupproduct > 0) {
-        $sql .= " and id_groupproduct='" . $id_groupproduct . "'";
+    if ($key == '' && $iddm > 0) {
+        $sql .= " AND sanpham.iddm = $iddm";
     }
-    $sql .= "  ORDER BY id DESC";
-    $listproducts = pdo_query($sql);
-    return $listproducts;
+    if ($key != '' && $iddm < 0) {
+        $sql .= " AND sanpham.name LIKE '%$key%'";
+    }
+
+    $dssp = getdb($sql);
+    return $dssp;
 }
 
-
-// function load_ten_dm($iddm)
-// {
-//     if ($iddm > 0) {
-//         $sql = "SELECT * FROM danhmuc WHERE id=" . $iddm;
-//         $dm = pdo_query_one($sql);
-//         extract($dm);
-//         return $name;
-//     } else {
-//         return "";
-//     }
-// }
-function loadone_sanpham($id)
+function delete_sp($id)
 {
-    $sql = "SELECT * FROM products WHERE id=" . $id;
-    $products = pdo_query_one($sql);
-    return $products;
+    $sql = "UPDATE `sanpham` SET `trangthai` = 1 WHERE id = $id";
+    getdb($sql);
 }
-function load_sanpham_cungloai($id, $iddm)
+function select_trangthai()
 {
-    $sql = "SELECT * FROM products WHERE iddm=" . $iddm . " AND id <> " . $id;
-    $listsanpham = pdo_query($sql);
-    return $listsanpham;
+    $sql = "SELECT * FROM `sanpham` WHERE trangthai = 1";
+    $trangthai = getdb($sql);
+    return $trangthai;
+}
+function khoiphuc($id)
+{
+    $sql = "UPDATE `sanpham` SET `trangthai` = 0 WHERE id = $id";
+    insertdb($sql);
+}
+function load_sp_edit($id)
+{
+    $sql = "SELECT sanpham.id,sanpham.img,sanpham.name,sanpham.price,danhmuc.dm_name,sanpham.iddm,sanpham.mota FROM `sanpham` JOIN `danhmuc` ON sanpham.iddm = danhmuc.id WHERE sanpham.id= $id";
+    $load_sp_edit = getdb($sql);
+    return $load_sp_edit;
 }
 
-function   update_sanpham($id, $name, $hinh, $price, $id_groupproduct)
+function insert_sp($name_sp, $price_sp, $img_sp, $mota_sp, $iddm_sp)
 {
+    $sql = "INSERT INTO `sanpham`(`id`, `name`, `price`, `img`, `mota`, `iddm`, `trangthai`) VALUES (null,'$name_sp','$price_sp','$img_sp','$mota_sp','$iddm_sp',0)";
+    insertdb($sql);
+}
 
-    if ($hinh != "") {
-        $sql = "UPDATE products SET id_groupproduct='" . $id_groupproduct . "', name='" . $name . "' ,img='" . $hinh . "',price='" . $price . "' where id=" . $id;
-    } else {
-        $sql = "UPDATE products SET id_groupproduct='" . $id_groupproduct . "', name='" . $name . "' ,img='" . $hinh . "',price='" . $price . "' where id=" . $id;
-    }
-    pdo_execute($sql);
+function update_sp($name_sp_edit, $price_sp_edit, $hinh, $mota_sp_edit, $loai_sp_edit, $id)
+{
+    $conn = connect();
+    $sql = $conn->prepare("UPDATE `sanpham` SET `name`='$name_sp_edit',`price`='$price_sp_edit',`img`='$hinh',`mota`='$mota_sp_edit',`iddm`='$loai_sp_edit' WHERE sanpham.id ='$id'");
+    $sql->execute();
+}
+
+function load_sp_cungloai_theo_id($iddm)
+{
+    $sql = "SELECT * FROM `sanpham` WHERE iddm = '$iddm'";
+    $loadsp_id = getdb($sql);
+    return $loadsp_id;
+}
+function insert_cart($idsp, $iduser, $quantity)
+{
+    $conn = connect();
+    $sql = $conn->prepare("INSERT INTO `giohang`(`idsp`, `iduser`, `quantity`) VALUES ('$idsp','$iduser','$quantity')");
+    $sql->execute();
+}
+function show_cart($iduser)
+{
+    $sql = "SELECT sanpham.*, giohang.quantity, giohang.id, giohang.idsp as idgiohang, giohang.iduser, giohang.idsp FROM `giohang` JOIN `sanpham` ON giohang.idsp = sanpham.id WHERE giohang.iduser = '$iduser'";
+    $load_cart = getdb($sql);
+    return $load_cart;
+}
+function dem_sp_cart($iduser)
+{
+    $conn = connect();
+    $sql = $conn->prepare("SELECT * FROM `giohang` WHERE iduser='$iduser'");
+    $sql->execute();
+    $dem = $sql->rowCount();
+    return $dem;
+}
+function delete_cart($idsp)
+{
+    $conn = connect();
+    $sql = $conn->prepare("DELETE FROM `giohang` WHERE id = '$idsp'");
+    $sql->execute();
+}
+function updateCart($iduser, $idsp, $quantity)
+{
+    $conn = connect();
+    $sql = $conn->prepare("UPDATE `giohang` SET `quantity` = '$quantity' WHERE idsp = '$idsp' AND iduser = '$iduser'");
+    $sql->execute();
 }
